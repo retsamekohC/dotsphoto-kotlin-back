@@ -26,3 +26,4 @@ replay_pid*
 /db/postgres.env
 /build/
 /.gradle/
+/.idea/
