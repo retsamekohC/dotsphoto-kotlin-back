@@ -1,0 +1,3 @@
+services:
+  dotsphoto-kotlin-back:
+    image
