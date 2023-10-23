@@ -24,6 +24,7 @@ hs_err_pid*
 replay_pid*
 /src/main/resources/application.conf
 /db/postgres.env
+/db/tmp
 /build/
 /.gradle/
 /.idea/

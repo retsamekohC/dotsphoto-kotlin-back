@@ -1,3 +1,22 @@
 services:
-  dotsphoto-kotlin-back:
-    image
+  web:
+    build: .
+    container_name: ktor-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+    container_name: db
+    volumes:
+      - ./db/tmp:/var/lib/postgresql/data
+    env_file:
+      - db/postgres.env
+    healthcheck:
+      test: pg_isready -U postgres || exit 1
+      interval: 1s
+      start_period: 5s
+      retries: 3
+      timeout: 10s
