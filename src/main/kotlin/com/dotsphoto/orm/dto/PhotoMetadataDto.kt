@@ -4,7 +4,9 @@ import com.dotsphoto.orm.tables.PhotoMetadata
 import com.dotsphoto.orm.util.CreateLongDto
 import com.dotsphoto.orm.util.LongIdTableDto
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PhotoMetadataDto(
     override val id: Long,
     val widthInPixels: Int?,

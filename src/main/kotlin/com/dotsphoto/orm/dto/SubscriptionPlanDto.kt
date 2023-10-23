@@ -4,7 +4,9 @@ import com.dotsphoto.orm.enums.Statuses
 import com.dotsphoto.orm.tables.SubscriptionPlan
 import com.dotsphoto.orm.util.CreateLongDto
 import com.dotsphoto.orm.util.LongIdTableDto
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SubscriptionPlanDto(
     override val id: Long,
     val planName: String,

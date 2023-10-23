@@ -5,7 +5,9 @@ import com.dotsphoto.orm.tables.Ownership
 import com.dotsphoto.orm.util.CreateLongDto
 import com.dotsphoto.orm.util.LongIdTableDto
 import com.dotsphoto.orm.util.UpdateLongDto
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class OwnershipDto(
     override val id: Long,
     val albumId: Long,

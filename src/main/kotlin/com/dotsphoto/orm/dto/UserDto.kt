@@ -5,6 +5,9 @@ import com.dotsphoto.orm.tables.User
 import com.dotsphoto.orm.util.CreateLongDto
 import com.dotsphoto.orm.util.LongIdTableDto
 import com.dotsphoto.orm.util.UpdateLongDto
+import kotlinx.serialization.Serializable
+
+@Serializable
 
 data class UserDto(
     override val id: Long,

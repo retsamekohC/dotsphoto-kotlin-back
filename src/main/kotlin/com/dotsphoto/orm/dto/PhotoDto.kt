@@ -6,9 +6,10 @@ import com.dotsphoto.orm.util.CreateLongDto
 import com.dotsphoto.orm.util.LongIdTableDto
 import com.dotsphoto.orm.util.UpdateLongDto
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 
-data class
-PhotoDto(
+@Serializable
+data class PhotoDto(
     override val id: Long,
     val content: ByteArray,
     val fileName: String,
