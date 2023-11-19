@@ -14,7 +14,10 @@ class OwnershipService(repository: OwnershipRepository) : LongIdService<Ownershi
         return repository.create(CreateOwnerhshipDto(albumDto.id, userDto.id, OwnershipLevel.OWNER))
     }
 
+    /**
+     * true если права есть, false если нет
+     */
     fun checkRights(albumId: Long, userId: Long) : Boolean {
-        return repository.findUnique { Ownership.album eq albumId and (Ownership.user eq userId) } == null
+        return repository.findUnique { Ownership.album eq albumId and (Ownership.user eq userId) } != null
     }
 }

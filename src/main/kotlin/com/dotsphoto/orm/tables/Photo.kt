@@ -27,7 +27,7 @@ class Photo(database: Database) {
 
     init {
         transaction(database) {
-            SchemaUtils.createMissingTablesAndColumns(Ownership.Table)
+            SchemaUtils.createMissingTablesAndColumns(Table)
         }
     }
 }

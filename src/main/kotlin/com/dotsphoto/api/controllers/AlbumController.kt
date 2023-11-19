@@ -6,9 +6,11 @@ import com.dotsphoto.plugins.GoogleSession
 import com.dotsphoto.plugins.UserSession
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+import org.jetbrains.exposed.sql.mapLazy
 import org.koin.java.KoinJavaComponent.inject
 
 fun Route.albumRoutes() {
@@ -21,12 +23,14 @@ fun Route.albumRoutes() {
         if (userSession == null) {
             call.respond(HttpStatusCode.NotFound)
         } else {
-            call.respond(albumService.findAllByUser(userSession.userId).toList())
+            val albums = albumService.findAllByUser(userSession.userId)
+            call.respond(albums)
         }
     }
 
     get("$baseUrl/root") {
         val userSession = call.sessions.get<UserSession>()
+        val googleSession = call.sessions.get<GoogleSession>()
         if (userSession == null) {
             call.respond(HttpStatusCode.NotFound)
         } else {
@@ -62,7 +66,7 @@ fun Route.albumRoutes() {
         } else if (userSession == null) {
             call.respond(HttpStatusCode.NotFound)
         } else {
-            photoService.getFromAlbumByUser(albumId, userSession.userId)
+            call.respond(photoService.getFromAlbumByUser(albumId, userSession.userId).mapLazy { it.id })
         }
     }
 }

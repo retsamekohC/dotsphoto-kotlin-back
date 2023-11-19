@@ -12,15 +12,19 @@ class UserService(repository: UserRepository) : LongIdDaoService<User.Table, Use
     private val albumService by inject<AlbumService>(AlbumService::class.java)
     private val subscriptionService by inject<SubscriptionService>(SubscriptionService::class.java)
     private val subscriptionPlanService by inject<SubscriptionPlanService>(SubscriptionPlanService::class.java)
+    private val ownershipService by inject<OwnershipService>(OwnershipService::class.java)
 
     fun registerUser(email: String, nickname: String?, fullName: String?): UserDto {
-        return repository.create(CreateUserDto(
+        val rootAlbum = albumService.createAlbum(nickname ?: email.substringBefore("@"))
+        val user = repository.create(CreateUserDto(
             nickname = nickname ?: email.substringBefore("@"),
             email = email,
             fullName = fullName,
-            rootAlbumId = albumService.createAlbum(nickname ?: email.substringBefore("@")).id,
+            rootAlbumId = rootAlbum.id,
             subscriptionId = subscriptionService.createSubscription(subscriptionPlanService.getSimpleSubscriptionPlan()).id
         ))
+        ownershipService.createOwnershipOwner(user, rootAlbum)
+        return user
     }
 
     fun findByEmail(email: String): UserDto? {

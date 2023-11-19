@@ -1,15 +1,19 @@
 services:
-  web:
+  api:
     build: .
     container_name: ktor-api
     ports:
       - "8080:8080"
+    environment:
+      - postgres_db_url_port=jdbc:postgresql://db:5432/postgres
     depends_on:
       db:
         condition: service_healthy
   db:
     image: postgres
     container_name: db
+    ports:
+      - "8081:5432"
     volumes:
       - ./db/tmp:/var/lib/postgresql/data
     env_file:

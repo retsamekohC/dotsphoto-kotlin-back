@@ -2,7 +2,6 @@ package com.dotsphoto.api.controllers
 
 import com.dotsphoto.orm.services.PhotoService
 import com.dotsphoto.orm.services.UserService
-import com.dotsphoto.plugins.GoogleSession
 import com.dotsphoto.plugins.UserSession
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -12,7 +11,11 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import org.koin.java.KoinJavaComponent.inject
+import java.io.File
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
+@OptIn(ExperimentalEncodingApi::class)
 fun Route.photoRoutes() {
     val baseUrl = "/photo"
 
@@ -20,14 +23,23 @@ fun Route.photoRoutes() {
     val userService by inject<UserService>(PhotoService::class.java)
 
     post(baseUrl) {
-        val parts = call.receiveMultipart().readAllParts()
         val userSession = call.sessions.get<UserSession>()
         if (userSession == null) {
             call.respond(HttpStatusCode.Unauthorized)
         } else {
-            val photoFile = parts.find { it is PartData.FileItem } as PartData.FileItem
-            val albumId = parts.find { it is PartData.FormItem } as PartData.FormItem
-            photoService.savePhotoToUserRoot(photoFile, userSession.userId)
+            val parts = call.receiveMultipart()
+            var file:PartData.FileItem? = null
+            parts.forEachPart {part ->
+                when (part) {
+                    is PartData.FileItem -> {
+                        file = part
+                    }
+                    else -> {}
+                }
+            }
+            val bytes = file!!.streamProvider().readBytes()
+            photoService.savePhotoToUserRoot(bytes, file!!.originalFileName, userSession.userId)
+            call.respond(HttpStatusCode.OK)
         }
     }
 

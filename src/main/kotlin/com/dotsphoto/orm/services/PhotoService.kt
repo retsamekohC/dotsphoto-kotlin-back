@@ -17,13 +17,13 @@ class PhotoService(repository: PhotoRepository) : LongIdDaoService<Photo.Table, 
 
     private val userService by inject<UserService>(UserService::class.java)
 
-    fun savePhotoToUserRoot(file: PartData.FileItem, userId: Long): PhotoDto {
+    fun savePhotoToUserRoot(bytes: ByteArray, photoName: String?, userId: Long): PhotoDto {
         val user = userService.findById(userId) ?: throw IllegalArgumentException("user does not exists, user=${userId}")
         val albumId = user.rootAlbumId
         return repository.create(
             CreatePhotoDto(
-                file.streamProvider().readBytes(),
-                file.originalFileName ?: UUID.randomUUID().toString(),
+                bytes,
+                photoName ?: UUID.randomUUID().toString(),
                 albumId
             )
         )

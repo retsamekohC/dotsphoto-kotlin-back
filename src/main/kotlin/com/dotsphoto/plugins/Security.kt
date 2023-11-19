@@ -90,7 +90,7 @@ fun Application.configureSecurity(config: ApplicationConfig, httpClient: HttpCli
                     user = userService.registerUser(userInfo.email, userInfo.email.substringBefore("@"), "${userInfo.givenName} ${userInfo.familyName}")
                 }
                 call.sessions.set(UserSession(user.id))
-                call.respondText("Hello, ${userInfo.name}!")
+                call.respondRedirect("/album/root")
             } else {
                 val redirectUrl = URLBuilder("http://localhost:8080/login").run {
                     parameters.append("redirectUrl", call.request.uri)

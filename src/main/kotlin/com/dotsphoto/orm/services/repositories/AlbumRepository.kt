@@ -6,6 +6,7 @@ import com.dotsphoto.orm.dto.UpdateAlbumDto
 import com.dotsphoto.orm.tables.Album
 import com.dotsphoto.orm.tables.Ownership
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class AlbumRepository : LongIdDaoRepository<Album.Table, AlbumDto, CreateAlbumDto, UpdateAlbumDto>() {
     override fun create(cdto: CreateAlbumDto): AlbumDto = insertAndGetDto {
@@ -24,11 +25,12 @@ class AlbumRepository : LongIdDaoRepository<Album.Table, AlbumDto, CreateAlbumDt
         resultRow[Album.status]
     )
 
-    fun findAllByUser(userId: Long): SizedIterable<AlbumDto> {
-        return Album.join(Ownership, JoinType.INNER, onColumn = Album.id, otherColumn = Ownership.album, additionalConstraint = { Ownership.user eq userId})
+    fun findAllByUser(userId: Long): List<AlbumDto>  = transaction {
+        Album.join(Ownership, JoinType.INNER, onColumn = Album.id, otherColumn = Ownership.album, additionalConstraint = { Ownership.user eq userId})
             .slice(Album.fields)
             .selectAll()
             .mapLazy { mapper(it) }
+            .toList()
     }
 
     fun findByIdForUser(albumId: Long, userId: Long) : AlbumDto? {

@@ -25,10 +25,7 @@ data class PhotoDto(
 
         other as PhotoDto
 
-        if (content != null) {
-            if (other.content == null) return false
-            if (!content.contentEquals(other.content)) return false
-        } else if (other.content != null) return false
+        if (!content.contentEquals(other.content)) return false
         if (fileName != other.fileName) return false
         if (createdAt != other.createdAt) return false
         if (lastUpdatedAt != other.lastUpdatedAt) return false
@@ -40,10 +37,10 @@ data class PhotoDto(
     }
 
     override fun hashCode(): Int {
-        var result = content?.contentHashCode() ?: 0
+        var result = content.contentHashCode()
         result = 31 * result + fileName.hashCode()
         result = 31 * result + createdAt.hashCode()
-        result = 31 * result + (lastUpdatedAt?.hashCode() ?: 0)
+        result = 31 * result + lastUpdatedAt.hashCode()
         result = 31 * result + metadataId.hashCode()
         result = 31 * result + status.hashCode()
         result = 31 * result + albumId.hashCode()
