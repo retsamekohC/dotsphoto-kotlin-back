@@ -12,8 +12,6 @@ import org.koin.java.KoinJavaComponent
 class User(database: Database) {
     companion object Table : LongIdTable(name = "user") {
         val nickname = varchar("nickname", 256).nullable()
-        val email = varchar("email", 256).uniqueIndex("user_email_uq_idx")
-        val fullName = varchar("full_name", 256).nullable()
         val rootAlbum = reference("root_album_id", Album.Table).index("user_root_album_fk_idx")
         val subscription = reference("subscription_id", Subscription.Table).index("user_subscription_fk_idx")
         val status = enumerationByName(
@@ -21,6 +19,7 @@ class User(database: Database) {
             Statuses.entries.maxBy { it.toString().length }.toString().length,
             Statuses::class
         ).default(Statuses.ACTIVE)
+        val userCreds = varchar("user_creds", 256).index("user_creds_search_idx")
     }
 
     init {

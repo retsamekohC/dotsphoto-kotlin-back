@@ -12,8 +12,6 @@ import kotlinx.serialization.Serializable
 data class UserDto(
     override val id: Long,
     val nickname: String?,
-    val email: String,
-    val fullName: String?,
     val rootAlbumId: Long,
     val subscriptionId: Long,
     val status: Statuses
@@ -21,10 +19,9 @@ data class UserDto(
 
 data class CreateUserDto(
     val nickname: String,
-    val email: String,
-    val fullName: String?,
     val rootAlbumId: Long,
-    val subscriptionId: Long
+    val subscriptionId: Long,
+    val userCreds: String
 ) : CreateLongDto<User.Table>
 
 data class UpdateUserDto(

@@ -9,10 +9,9 @@ import org.jetbrains.exposed.sql.ResultRow
 class UserRepository : LongIdDaoRepository<User.Table, UserDto, CreateUserDto, UpdateUserDto>() {
     override fun create(cdto: CreateUserDto): UserDto = insertAndGetDto {
         it[nickname] = cdto.nickname
-        it[email] = cdto.email
-        it[fullName] = cdto.fullName
         it[rootAlbum] = cdto.rootAlbumId
         it[subscription] = cdto.subscriptionId
+        it[userCreds] = cdto.userCreds
     }
 
     override fun update(id: Long, udto: UpdateUserDto): UserDto? = updateById(id) {
@@ -22,8 +21,6 @@ class UserRepository : LongIdDaoRepository<User.Table, UserDto, CreateUserDto, U
     override fun mapper(resultRow: ResultRow): UserDto = UserDto(
         resultRow[User.id].value,
         resultRow[User.nickname],
-        resultRow[User.email],
-        resultRow[User.fullName],
         resultRow[User.rootAlbum].value,
         resultRow[User.subscription].value,
         resultRow[User.status],
