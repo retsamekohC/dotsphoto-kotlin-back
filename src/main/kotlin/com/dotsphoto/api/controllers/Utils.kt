@@ -1,5 +1,6 @@
 package com.dotsphoto.api.controllers
 
+import com.dotsphoto.plugins.SecurityConsts
 import com.dotsphoto.plugins.UserSession
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -11,6 +12,8 @@ import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
 import kotlinx.coroutines.ThreadContextElement
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.lang.RuntimeException
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
@@ -26,7 +29,7 @@ fun Route.authAndCall(
         val pipelineContext = this
         val connection = DotsphotoConnection(call)
         connection.session<UserSession>()
-        withContext(ConnectionContext(connection = DotsphotoConnection(call))) { body(pipelineContext, Unit) }
+        withContext(ConnectionContext(connection = connection)) { body(pipelineContext, Unit) }
     }
     return method.invoke(path, extendedBody)
 }

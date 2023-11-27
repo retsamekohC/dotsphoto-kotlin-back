@@ -26,8 +26,13 @@ fun Route.authRoutes() {
         post("/register") {
             val registerRequest = call.receive<RegisterRequest>()
             val b64 = Base64.encode("${registerRequest.name}:${registerRequest.password}".toByteArray(Charsets.UTF_8))
-            userService.registerUser(registerRequest.name, Utils.getSHA1Hash(b64))
-            call.respond(HttpStatusCode.Accepted)
+            val creds = Utils.getSHA1Hash(b64)
+            if (userService.findByCreds(creds) != null) {
+                call.respond(HttpStatusCode.NoContent)
+            } else {
+                userService.registerUser(registerRequest.name, creds)
+                call.respond(HttpStatusCode.Accepted)
+            }
         }
         authenticate(AUTH_BASIC) {
             authAndCall(::post, "/login") {

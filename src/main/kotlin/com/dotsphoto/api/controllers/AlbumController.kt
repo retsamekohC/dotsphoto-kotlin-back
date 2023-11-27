@@ -44,7 +44,7 @@ fun Route.albumRoutes() {
                     if (album == null) {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
-                        call.respond(this)
+                        call.respond(album)
                     }
                 }
             }
@@ -55,7 +55,7 @@ fun Route.albumRoutes() {
                 if (albumId == null) {
                     call.respond(HttpStatusCode.BadRequest)
                 } else {
-                    call.respond(photoService.getFromAlbumByUser(albumId, userId).mapLazy { it.id })
+                    call.respond(photoService.getFromAlbumByUser(albumId, userId).toList().map { it.id })
                 }
             }
         }

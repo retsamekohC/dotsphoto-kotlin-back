@@ -15,7 +15,7 @@ abstract class BaseService<ID : Comparable<ID>, T : IdTable<ID>, DTO : TableDto<
     open val repository: NonUpdatableRepository<ID, T, DTO, CDTO>
 ) {
 
-    fun findAll(op: SqlExpressionBuilder.() -> Op<Boolean>): SizedIterable<DTO> = repository.findAll(op)
+    fun findAll(op: SqlExpressionBuilder.() -> Op<Boolean>): List<DTO> = repository.findAll(op)
     fun findById(id: ID): DTO? = repository.findById(id)
 
     fun create(cdto: CDTO): DTO = repository.create(cdto)

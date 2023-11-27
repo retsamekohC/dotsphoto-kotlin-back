@@ -39,16 +39,16 @@ class PhotoService(repository: PhotoRepository) : LongIdDaoService<Photo.Table, 
         }
     }
 
-    fun getFromAlbumByUser(albumId: Long, userId: Long) : SizedIterable<PhotoDto> {
+    fun getFromAlbumByUser(albumId: Long, userId: Long) : List<PhotoDto> {
         return if (ownershipService.checkRights(albumId, userId)) {
             (repository as PhotoRepository).findByAlbumId(albumId)
         } else {
-            emptySized()
+            emptyList()
         }
     }
 
-    fun getFromUserRoot(userId: Long) : SizedIterable<PhotoDto> {
-        val userRootAlbumId = userService.findById(userId)?.rootAlbumId ?: return emptySized()
+    fun getFromUserRoot(userId: Long) : List<PhotoDto> {
+        val userRootAlbumId = userService.findById(userId)?.rootAlbumId ?: return emptyList()
         return (repository as PhotoRepository).findByAlbumId(userRootAlbumId)
     }
 }

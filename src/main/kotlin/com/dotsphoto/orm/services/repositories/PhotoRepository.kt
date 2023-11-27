@@ -34,7 +34,7 @@ class PhotoRepository : LongIdDaoRepository<Photo.Table, PhotoDto, CreatePhotoDt
         resultRow[Photo.album].value,
     )
 
-    fun findByAlbumId(albumId: Long) : SizedIterable<PhotoDto> {
+    fun findByAlbumId(albumId: Long) : List<PhotoDto> {
         return findAll { Photo.album eq albumId }
     }
 

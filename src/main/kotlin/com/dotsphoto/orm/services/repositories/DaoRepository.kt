@@ -22,7 +22,7 @@ interface DeleteRepository<ID : Comparable<ID>, T : IdTable<ID>> {
 }
 
 interface FindRepository<ID : Comparable<ID>, T : IdTable<ID>, DTO : TableDto<ID, T>> {
-    fun findAll(op: SqlExpressionBuilder.() -> Op<Boolean>): SizedIterable<DTO>
+    fun findAll(op: SqlExpressionBuilder.() -> Op<Boolean>): List<DTO>
     fun findById(id: ID): DTO?
     fun findUnique(op: SqlExpressionBuilder.() -> Op<Boolean>): DTO?
 }
@@ -43,8 +43,8 @@ abstract class NonUpdatableLongIdRepository<T : LongIdTable, LDTO : LongIdTableD
 
     protected abstract fun getTable(): T
 
-    override fun findAll(op: SqlExpressionBuilder.() -> Op<Boolean>): SizedIterable<LDTO> = transaction {
-        getTable().select(op).mapLazy { mapper(it) }
+    override fun findAll(op: SqlExpressionBuilder.() -> Op<Boolean>): List<LDTO> = transaction {
+        getTable().select(op).map{ mapper(it) }
     }
 
     override fun findById(id: Long): LDTO? = transaction {

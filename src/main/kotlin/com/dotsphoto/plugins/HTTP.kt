@@ -16,5 +16,6 @@ fun Application.configureHTTP() {
         allowNonSimpleContentTypes = true
         allowHeaders { it in setOf("authorization", "content-type", "x-auth-token", "user_session") }
         allowOrigins { it in setOf("http://localhost:3000","http://localhost:3000/","http://localhost:8080/", "http://localhost:8082", "http://localhost:8082/") }
+
     }
 }
