@@ -1,5 +1,4 @@
 FROM gradle:7-jdk17-alpine AS build
-ENV PORT=8080
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle buildFatJar --no-daemon

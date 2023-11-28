@@ -6,8 +6,6 @@ import com.dotsphoto.orm.dto.UpdatePhotoDto
 import com.dotsphoto.orm.tables.Photo
 import com.dotsphoto.utils.DateUtils
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SizedIterable
-import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 
 class PhotoRepository : LongIdDaoRepository<Photo.Table, PhotoDto, CreatePhotoDto, UpdatePhotoDto>() {

@@ -19,10 +19,21 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 @Serializable
 data class RegisterRequest(val name: String, val password: String)
 
+/**
+ * Defines the authentication routes for the application.
+ * These routes handle user registration, login, and logout.
+ */
 @OptIn(ExperimentalEncodingApi::class)
 fun Route.authRoutes() {
     val userService: UserService by inject<UserService>()
     route("/auth") {
+
+        /**
+         * POST endpoint at `/register` for user registration.
+         * Receives a RegisterRequest and encodes the name and password.
+         * If a user with the same hashed credentials exists, a No Content (204) response is sent.
+         * Otherwise, a new user is registered and an Accepted (202) response is sent.
+         */
         post("/register") {
             val registerRequest = call.receive<RegisterRequest>()
             val b64 = Base64.encode("${registerRequest.name}:${registerRequest.password}".toByteArray(Charsets.UTF_8))
@@ -34,12 +45,20 @@ fun Route.authRoutes() {
                 call.respond(HttpStatusCode.Accepted)
             }
         }
+
         authenticate(AUTH_BASIC) {
+
             authAndCall(::post, "/login") {
                 val session = authSession()
                 call.sessions.set(USER_SESSION, session)
                 call.respond(HttpStatusCode.Accepted)
             }
+            /**
+             * HTTP POST endpoint at `/logout` for user logout.
+             *
+             * This endpoint ends the user session by clearing it.
+             * The server then responds with HTTP status code 200 (OK) to indicate successful termination of the session.
+             */
             post("/logout") {
                 call.sessions.clear(USER_SESSION)
                 call.respond(HttpStatusCode.OK)
