@@ -1,5 +1,7 @@
 package com.dotsphoto.api.controllers
 
+import com.dotsphoto.orm.dto.PhotoApiDto
+import com.dotsphoto.orm.dto.mapToApiDto
 import com.dotsphoto.orm.services.PhotoService
 import com.dotsphoto.plugins.SecurityConsts.USER_SESSION
 import io.ktor.http.*
@@ -35,12 +37,13 @@ fun Route.photoRoutes() {
 
             authAndCall(::get, "/{id}") {
                 val id = call.getParameter("id") { it.toLong() }
+                val compressed = call.getParameter("compressed") { it.toBoolean() }
                 val userId = authSession().id
                 val photo = photoService.getByIdAndUser(id, userId)
                 if (photo == null) {
                     call.respond(HttpStatusCode.NotFound)
                 } else {
-                    call.respond(photo)
+                    call.respond(photo.mapToApiDto(compressed))
                 }
             }
         }

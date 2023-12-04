@@ -12,6 +12,7 @@ import org.koin.java.KoinJavaComponent
 class Photo(database: Database) {
     companion object Table : LongIdTable(name = "photo") {
         val content = blob("content")
+        val compressedContent = blob("compressed_content")
         val fileName = varchar("filename", 256)
         val createdAt = datetime("created_at")
         val lastUpdatedAt = datetime("last_updated_at")

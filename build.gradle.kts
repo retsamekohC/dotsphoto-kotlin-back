@@ -5,6 +5,7 @@ val logbackVersion: String by project
 val exposedVersion: String by project
 val postgresqlDriverVersion: String by project
 val koinVersion: String by project
+val compressorVersion: String by project
 
 plugins {
     kotlin("jvm") version "1.9.10"
@@ -50,8 +51,9 @@ dependencies {
     implementation("io.ktor:ktor-server-html-builder:$ktorVersion")
     implementation("io.insert-koin:koin-ktor:$koinVersion")
     implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
-    implementation("io.ktor:ktor-client-cio-jvm:2.3.4")
-    implementation("io.ktor:ktor-client-encoding:2.3.4")
+    implementation("io.ktor:ktor-client-cio-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-client-encoding:$ktorVersion")
+    implementation("id.zelory:compressor:$compressorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }

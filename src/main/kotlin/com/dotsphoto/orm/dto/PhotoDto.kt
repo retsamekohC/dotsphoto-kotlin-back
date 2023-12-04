@@ -12,6 +12,7 @@ import kotlinx.serialization.Serializable
 data class PhotoDto(
     override val id: Long,
     val content: ByteArray,
+    val compressedContent: ByteArray,
     val fileName: String,
     val createdAt: LocalDateTime,
     val lastUpdatedAt: LocalDateTime,
@@ -77,3 +78,56 @@ data class CreatePhotoDto(
 data class UpdatePhotoDto(
     val status: Statuses
 ) : UpdateLongDto<Photo.Table>
+
+@Serializable
+data class PhotoApiDto(
+    val id: Long,
+    val content: ByteArray,
+    val fileName: String,
+    val createdAt: LocalDateTime,
+    val lastUpdatedAt: LocalDateTime,
+    val metadataId: Long?,
+    val status: Statuses,
+    val albumId: Long
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PhotoApiDto
+
+        if (id != other.id) return false
+        if (!content.contentEquals(other.content)) return false
+        if (fileName != other.fileName) return false
+        if (createdAt != other.createdAt) return false
+        if (lastUpdatedAt != other.lastUpdatedAt) return false
+        if (metadataId != other.metadataId) return false
+        if (status != other.status) return false
+        if (albumId != other.albumId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + content.contentHashCode()
+        result = 31 * result + fileName.hashCode()
+        result = 31 * result + createdAt.hashCode()
+        result = 31 * result + lastUpdatedAt.hashCode()
+        result = 31 * result + (metadataId?.hashCode() ?: 0)
+        result = 31 * result + status.hashCode()
+        result = 31 * result + albumId.hashCode()
+        return result
+    }
+}
+
+fun PhotoDto.mapToApiDto(compressed: Boolean): PhotoApiDto = PhotoApiDto(
+    this.id,
+    if (compressed) this.compressedContent else this.content,
+    this.fileName,
+    this.createdAt,
+    this.lastUpdatedAt,
+    this.metadataId,
+    this.status,
+    this.albumId
+)
