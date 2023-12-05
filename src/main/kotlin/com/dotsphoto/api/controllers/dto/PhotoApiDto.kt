@@ -1,30 +1,40 @@
-package com.dotsphoto.orm.dto
+package com.dotsphoto.api.controllers.dto
 
+import com.dotsphoto.orm.dto.PhotoDto
 import com.dotsphoto.orm.enums.Statuses
-import com.dotsphoto.orm.tables.Photo
-import com.dotsphoto.orm.util.CreateLongDto
-import com.dotsphoto.orm.util.LongIdTableDto
-import com.dotsphoto.orm.util.UpdateLongDto
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PhotoDto(
-    override val id: Long,
+data class PhotoApiDto(
+    val id: Long,
     val content: ByteArray,
-    val compressedContent: ByteArray,
     val fileName: String,
     val createdAt: LocalDateTime,
     val lastUpdatedAt: LocalDateTime,
     val metadataId: Long?,
     val status: Statuses,
     val albumId: Long
-) : LongIdTableDto<Photo.Table> {
+) {
+
+    companion object {
+        fun from(photoDto: PhotoDto, compressed: Boolean): PhotoApiDto = PhotoApiDto(
+            photoDto.id,
+            if (compressed) photoDto.compressedContent else photoDto.content,
+            photoDto.fileName,
+            photoDto.createdAt,
+            photoDto.lastUpdatedAt,
+            photoDto.metadataId,
+            photoDto.status,
+            photoDto.albumId
+        )
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PhotoDto
+        other as PhotoApiDto
 
         if (!content.contentEquals(other.content)) return false
         if (fileName != other.fileName) return false
@@ -48,33 +58,3 @@ data class PhotoDto(
         return result
     }
 }
-
-data class CreatePhotoDto(
-    val content: ByteArray,
-    val fileName: String,
-    val albumId: Long
-) : CreateLongDto<Photo.Table> {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as CreatePhotoDto
-
-        if (!content.contentEquals(other.content)) return false
-        if (fileName != other.fileName) return false
-        if (albumId != other.albumId) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = content.contentHashCode()
-        result = 31 * result + fileName.hashCode()
-        result = 31 * result + albumId.hashCode()
-        return result
-    }
-}
-
-data class UpdatePhotoDto(
-    val status: Statuses
-) : UpdateLongDto<Photo.Table>

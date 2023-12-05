@@ -1,11 +1,11 @@
 package com.dotsphoto.orm.services.repositories
 
-import com.dotsphoto.orm.dto.CreateOwnerhshipDto
-import com.dotsphoto.orm.dto.OwnershipDto
-import com.dotsphoto.orm.dto.UpdateOwnershipDto
+import com.dotsphoto.orm.dto.*
+import com.dotsphoto.orm.services.UserService
+import com.dotsphoto.orm.tables.Album
 import com.dotsphoto.orm.tables.Ownership
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
+import com.dotsphoto.orm.tables.User
+import org.jetbrains.exposed.sql.*
 
 class OwnershipRepository : LongIdDaoRepository<Ownership.Table, OwnershipDto, CreateOwnerhshipDto, UpdateOwnershipDto>() {
     override fun create(cdto: CreateOwnerhshipDto): OwnershipDto = insertAndGetDto {
@@ -26,5 +26,4 @@ class OwnershipRepository : LongIdDaoRepository<Ownership.Table, OwnershipDto, C
     )
 
     override fun getTable(): Ownership.Table = Ownership.Table
-
 }

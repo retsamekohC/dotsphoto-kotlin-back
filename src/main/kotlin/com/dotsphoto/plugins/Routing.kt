@@ -1,9 +1,6 @@
 package com.dotsphoto.plugins
 
-import com.dotsphoto.api.controllers.albumRoutes
-import com.dotsphoto.api.controllers.authRoutes
-import com.dotsphoto.api.controllers.photoRoutes
-import com.dotsphoto.api.controllers.userRoutes
+import com.dotsphoto.api.controllers.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
@@ -15,5 +12,6 @@ fun Application.configureRouting() {
         userRoutes()
         photoRoutes()
         albumRoutes()
+        ownerShipRoutes()
     }
 }

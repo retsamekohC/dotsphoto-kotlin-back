@@ -26,7 +26,7 @@ class UserService(repository: UserRepository) : LongIdDaoService<User.Table, Use
             subscriptionId = subscriptionService.createSubscription(subscriptionPlanService.getSimpleSubscriptionPlan()).id,
             userCreds = credentials
         ))
-        ownershipService.createOwnershipOwner(user, rootAlbum)
+        ownershipService.createOwnershipOwner(user.id, rootAlbum.id)
         return user
     }
 
@@ -36,5 +36,13 @@ class UserService(repository: UserRepository) : LongIdDaoService<User.Table, Use
      */
     fun findByCreds(creds: String): UserDto? {
         return repository.findUnique { User.userCreds eq creds }
+    }
+
+    fun getAllUsers(): List<UserDto> {
+        return repository.findAll()
+    }
+
+    fun getUsersWithAccessTo(albumId: Long): List<UserDto> {
+        return (repository as UserRepository).getUsersWithAccessTo(albumId)
     }
 }

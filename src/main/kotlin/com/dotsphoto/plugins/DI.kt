@@ -9,6 +9,8 @@ import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
 
 fun Application.configureDI() {
     val dbRepositoriesModule = module {

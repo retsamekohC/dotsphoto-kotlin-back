@@ -3,8 +3,12 @@ package com.dotsphoto.orm.services.repositories
 import com.dotsphoto.orm.dto.CreateUserDto
 import com.dotsphoto.orm.dto.UpdateUserDto
 import com.dotsphoto.orm.dto.UserDto
+import com.dotsphoto.orm.tables.Ownership
 import com.dotsphoto.orm.tables.User
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.select
 
 class UserRepository : LongIdDaoRepository<User.Table, UserDto, CreateUserDto, UpdateUserDto>() {
     override fun create(cdto: CreateUserDto): UserDto = insertAndGetDto {
@@ -27,4 +31,11 @@ class UserRepository : LongIdDaoRepository<User.Table, UserDto, CreateUserDto, U
     )
 
     override fun getTable(): User.Table = User.Table
+
+    fun getUsersWithAccessTo(albumId: Long): List<UserDto> {
+        return Ownership.join(User.Table, JoinType.INNER, onColumn = Ownership.user, otherColumn = User.id)
+            .slice(User.fields)
+            .select { Ownership.album eq albumId }
+            .map { mapper(it) }
+    }
 }

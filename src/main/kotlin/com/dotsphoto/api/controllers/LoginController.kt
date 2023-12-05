@@ -1,5 +1,6 @@
 package com.dotsphoto.api.controllers
 
+import com.dotsphoto.api.controllers.dto.request.bodies.RegisterRequest
 import com.dotsphoto.orm.services.UserService
 import com.dotsphoto.orm.util.Utils
 import com.dotsphoto.plugins.SecurityConsts.AUTH_BASIC
@@ -11,13 +12,9 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
-import kotlinx.serialization.Serializable
 import org.koin.ktor.ext.inject
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-
-@Serializable
-data class RegisterRequest(val name: String, val password: String)
 
 /**
  * Defines the authentication routes for the application.
@@ -30,7 +27,7 @@ fun Route.authRoutes() {
 
         /**
          * POST endpoint at `/register` for user registration.
-         * Receives a RegisterRequest and encodes the name and password.
+         * Receives a com.dotsphoto.api.controllers.dto.request.bodies.RegisterRequest and encodes the name and password.
          * If a user with the same hashed credentials exists, a No Content (204) response is sent.
          * Otherwise, a new user is registered and an Accepted (202) response is sent.
          */

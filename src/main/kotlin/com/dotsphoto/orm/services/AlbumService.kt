@@ -34,4 +34,8 @@ class AlbumService(repository: AlbumRepository) :
         val userRootAlbumId = userService.findById(userId)?.rootAlbumId ?: return null
         return findById(userRootAlbumId)
     }
+
+    fun getOwnedByUser(userId: Long):List<AlbumDto> {
+        return (repository as AlbumRepository).findOwnedByUser(userId)
+    }
 }

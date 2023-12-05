@@ -5,6 +5,7 @@ import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -22,7 +23,7 @@ interface DeleteRepository<ID : Comparable<ID>, T : IdTable<ID>> {
 }
 
 interface FindRepository<ID : Comparable<ID>, T : IdTable<ID>, DTO : TableDto<ID, T>> {
-    fun findAll(op: SqlExpressionBuilder.() -> Op<Boolean>): List<DTO>
+    fun findAll(op: (SqlExpressionBuilder.() -> Op<Boolean>)?): List<DTO>
     fun findById(id: ID): DTO?
     fun findUnique(op: SqlExpressionBuilder.() -> Op<Boolean>): DTO?
 }
@@ -43,8 +44,12 @@ abstract class NonUpdatableLongIdRepository<T : LongIdTable, LDTO : LongIdTableD
 
     protected abstract fun getTable(): T
 
-    override fun findAll(op: SqlExpressionBuilder.() -> Op<Boolean>): List<LDTO> = transaction {
-        getTable().select(op).map{ mapper(it) }
+    fun findAll(): List<LDTO> = transaction {
+        findAll(null)
+    }
+
+    override fun findAll(op: (SqlExpressionBuilder.() -> Op<Boolean>)?): List<LDTO> = transaction {
+        getTable().select(op ?: ({ getTable().id greater 0 })).map{ mapper(it) }
     }
 
     override fun findById(id: Long): LDTO? = transaction {

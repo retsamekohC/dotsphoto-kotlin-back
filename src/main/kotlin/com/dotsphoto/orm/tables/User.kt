@@ -11,7 +11,7 @@ import org.koin.java.KoinJavaComponent
 
 class User(database: Database) {
     companion object Table : LongIdTable(name = "user") {
-        val nickname = varchar("nickname", 256).nullable()
+        val nickname = varchar("nickname", 256)
         val rootAlbum = reference("root_album_id", Album.Table).index("user_root_album_fk_idx")
         val subscription = reference("subscription_id", Subscription.Table).index("user_subscription_fk_idx")
         val status = enumerationByName(

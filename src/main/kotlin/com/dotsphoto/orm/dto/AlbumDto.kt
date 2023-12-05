@@ -1,5 +1,6 @@
 package com.dotsphoto.orm.dto
 
+import com.dotsphoto.api.controllers.dto.AlbumApiDto
 import com.dotsphoto.orm.enums.Statuses
 import com.dotsphoto.orm.tables.Album
 import com.dotsphoto.orm.util.CreateLongDto

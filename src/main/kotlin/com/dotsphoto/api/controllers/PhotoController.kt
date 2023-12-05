@@ -1,23 +1,18 @@
 package com.dotsphoto.api.controllers
 
-import com.dotsphoto.orm.dto.PhotoApiDto
-import com.dotsphoto.orm.dto.mapToApiDto
+import com.dotsphoto.api.controllers.dto.PhotoApiDto
+import com.dotsphoto.api.controllers.dto.request.bodies.PhotoPostRequest
 import com.dotsphoto.orm.services.PhotoService
 import com.dotsphoto.plugins.SecurityConsts.USER_SESSION
 import io.ktor.http.*
-import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.Serializable
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-
-@Serializable
-data class PhotoPostRequest(val b64: String, val photoName: String)
 
 @OptIn(ExperimentalEncodingApi::class)
 fun Route.photoRoutes() {
@@ -43,7 +38,7 @@ fun Route.photoRoutes() {
                 if (photo == null) {
                     call.respond(HttpStatusCode.NotFound)
                 } else {
-                    call.respond(photo.mapToApiDto(compressed))
+                    call.respond<PhotoApiDto>(PhotoApiDto.from(photo, compressed))
                 }
             }
         }

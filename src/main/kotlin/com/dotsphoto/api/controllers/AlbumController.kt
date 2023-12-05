@@ -1,27 +1,33 @@
 package com.dotsphoto.api.controllers
 
+import com.dotsphoto.api.controllers.dto.AlbumApiDto
+import com.dotsphoto.api.controllers.dto.UserApiDto
+import com.dotsphoto.api.controllers.dto.request.bodies.ShareRequest
 import com.dotsphoto.orm.services.AlbumService
+import com.dotsphoto.orm.services.OwnershipService
 import com.dotsphoto.orm.services.PhotoService
 import com.dotsphoto.plugins.SecurityConsts.USER_SESSION
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.mapLazy
+import kotlinx.html.A
 import org.koin.java.KoinJavaComponent.inject
 
 fun Route.albumRoutes() {
     val baseUrl = "/album"
     val albumService by inject<AlbumService>(AlbumService::class.java)
     val photoService by inject<PhotoService>(PhotoService::class.java)
+    val ownershipService by inject<OwnershipService>(OwnershipService::class.java)
 
     authenticate(USER_SESSION) {
         route(baseUrl) {
             authAndCall(::get, "") {
                 val userId = authSession().id
                 val albums = albumService.findAllByUser(userId)
-                call.respond(albums)
+                call.respond<List<AlbumApiDto>>(albums.map { AlbumApiDto.from(it) })
             }
 
             authAndCall(::get, "/root") {
@@ -30,7 +36,7 @@ fun Route.albumRoutes() {
                 if (rootAlbum == null) {
                     call.respond(HttpStatusCode.NotFound)
                 } else {
-                    call.respond(rootAlbum)
+                    call.respond<AlbumApiDto>(AlbumApiDto.from(rootAlbum))
                 }
             }
 
@@ -44,7 +50,7 @@ fun Route.albumRoutes() {
                     if (album == null) {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
-                        call.respond(album)
+                        call.respond<AlbumApiDto>(AlbumApiDto.from(album))
                     }
                 }
             }
@@ -55,8 +61,28 @@ fun Route.albumRoutes() {
                 if (albumId == null) {
                     call.respond(HttpStatusCode.BadRequest)
                 } else {
-                    call.respond(photoService.getFromAlbumByUser(albumId, userId).toList().map { it.id })
+                    call.respond<List<Long>>(photoService.getFromAlbumByUser(albumId, userId).toList().map { it.id })
                 }
+            }
+
+            authAndCall(::post, "/share") {
+                val shareRequest = call.receive<ShareRequest>()
+                val callUserId = authSession().id
+                if (ownershipService.checkRightsOwner(shareRequest.albumId, callUserId)) {
+                    if (ownershipService.checkRights(shareRequest.albumId, shareRequest.userId)) {
+                        call.respond(HttpStatusCode.OK)
+                    } else {
+                        ownershipService.createOwnershipView(shareRequest.userId, shareRequest.albumId)
+                        call.respond(HttpStatusCode.OK)
+                    }
+                } else {
+                    call.respond(HttpStatusCode.Forbidden)
+                }
+            }
+
+            authAndCall(::get, "/my") {
+                val userId = authSession().id
+                call.respond<List<AlbumApiDto>>(albumService.getOwnedByUser(userId).map { AlbumApiDto.from(it) })
             }
         }
     }
