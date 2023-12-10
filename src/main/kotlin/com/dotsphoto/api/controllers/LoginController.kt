@@ -48,7 +48,7 @@ fun Route.authRoutes() {
             authAndCall(::post, "/login") {
                 val session = authSession()
                 call.sessions.set(USER_SESSION, session)
-                call.respond(HttpStatusCode.Accepted)
+                call.respond(if (session.authed) HttpStatusCode.Accepted else HttpStatusCode.Unauthorized)
             }
             /**
              * HTTP POST endpoint at `/logout` for user logout.
