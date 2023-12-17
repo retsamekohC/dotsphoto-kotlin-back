@@ -38,4 +38,6 @@ class OwnershipService(repository: OwnershipRepository) : LongIdService<Ownershi
     fun checkRightsOwner(albumId: Long, userId: Long) : Boolean {
         return repository.findUnique { Ownership.album eq albumId and (Ownership.user eq userId) and (Ownership.level eq OwnershipLevel.OWNER) } != null
     }
+
+
 }

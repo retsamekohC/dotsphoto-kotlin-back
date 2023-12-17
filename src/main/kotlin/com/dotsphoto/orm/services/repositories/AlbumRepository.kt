@@ -4,6 +4,7 @@ import com.dotsphoto.orm.dto.AlbumDto
 import com.dotsphoto.orm.dto.CreateAlbumDto
 import com.dotsphoto.orm.dto.UpdateAlbumDto
 import com.dotsphoto.orm.enums.OwnershipLevel
+import com.dotsphoto.orm.enums.Statuses
 import com.dotsphoto.orm.tables.Album
 import com.dotsphoto.orm.tables.Ownership
 import org.jetbrains.exposed.sql.*
@@ -29,7 +30,7 @@ class AlbumRepository : LongIdDaoRepository<Album.Table, AlbumDto, CreateAlbumDt
     fun findAllByUser(userId: Long): List<AlbumDto>  = transaction {
         Album.join(Ownership, JoinType.INNER, onColumn = Album.id, otherColumn = Ownership.album, additionalConstraint = { Ownership.user eq userId})
             .slice(Album.fields)
-            .selectAll()
+            .select{ Album.status eq Statuses.ACTIVE }
             .mapLazy { mapper(it) }
             .toList()
     }
@@ -43,7 +44,7 @@ class AlbumRepository : LongIdDaoRepository<Album.Table, AlbumDto, CreateAlbumDt
             onColumn = Album.id, otherColumn = Ownership.album,
             additionalConstraint = { Ownership.user eq userId and (Ownership.level eq OwnershipLevel.OWNER)})
             .slice(Album.fields)
-            .selectAll()
+            .select{ Album.status eq Statuses.ACTIVE }
             .map { mapper(it) }
     }
 

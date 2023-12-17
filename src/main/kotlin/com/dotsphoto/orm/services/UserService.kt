@@ -19,7 +19,7 @@ class UserService(repository: UserRepository) : LongIdDaoService<User.Table, Use
     private val ownershipService by inject<OwnershipService>(OwnershipService::class.java)
 
     fun registerUser(nickname: String, credentials: String): UserDto {
-        val rootAlbum = albumService.createAlbum(nickname ?: nickname)
+        val rootAlbum = albumService.createAlbum(nickname)
         val user = repository.create(CreateUserDto(
             nickname = nickname,
             rootAlbumId = rootAlbum.id,

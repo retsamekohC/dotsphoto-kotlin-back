@@ -1,5 +1,6 @@
 package com.dotsphoto.api.controllers.dto
 
+import com.dotsphoto.orm.dto.PhotoContentDto
 import com.dotsphoto.orm.dto.PhotoDto
 import com.dotsphoto.orm.enums.Statuses
 import kotlinx.datetime.LocalDateTime
@@ -18,9 +19,9 @@ data class PhotoApiDto(
 ) {
 
     companion object {
-        fun from(photoDto: PhotoDto, compressed: Boolean): PhotoApiDto = PhotoApiDto(
+        fun from(photoDto: PhotoDto, photoContentDto: PhotoContentDto, compressed: Boolean): PhotoApiDto = PhotoApiDto(
             photoDto.id,
-            if (compressed) photoDto.compressedContent else photoDto.content,
+            if (compressed) photoContentDto.compressedContent else photoContentDto.content,
             photoDto.fileName,
             photoDto.createdAt,
             photoDto.lastUpdatedAt,

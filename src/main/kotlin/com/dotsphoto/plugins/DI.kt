@@ -2,6 +2,7 @@ package com.dotsphoto.plugins
 
 import com.dotsphoto.orm.services.*
 import com.dotsphoto.orm.services.repositories.*
+import io.ktor.events.EventDefinition
 import io.ktor.server.application.*
 import io.ktor.util.*
 import org.koin.core.KoinApplication
@@ -21,6 +22,7 @@ fun Application.configureDI() {
         singleOf(::SubscriptionPlanRepository)
         singleOf(::SubscriptionRepository)
         singleOf(::UserRepository)
+        singleOf(::PhotoContentRepository)
     }
     val dbServiceModule = module {
         singleOf(::AlbumService)
@@ -30,6 +32,7 @@ fun Application.configureDI() {
         singleOf(::SubscriptionPlanService)
         singleOf(::SubscriptionService)
         singleOf(::UserService)
+        singleOf(::PhotoContentService)
     }
     install(KoinPlugin) {
         modules(
