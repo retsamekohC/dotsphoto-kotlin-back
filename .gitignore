@@ -25,7 +25,11 @@ replay_pid*
 /src/main/resources/application.conf
 /db/postgres.env
 /db/tmp
+/db/RootCA.pem
 /build/
 /.gradle/
 /.idea/
 .env
+deploy
+deploy/*
+.idea
